@@ -1,71 +1,91 @@
-// Element du DOM
+                            // Element du DOM
 const input = document.querySelector('#input')
 const btnAdd = document.querySelector('#btnAdd')
 const selected = document.querySelector('.select-option')
 const todoList = document.querySelector('.todo-list')
 const btnTrash = document.querySelector('.btn-delect')
-
-//Events
+const countItem = document.querySelector('.count')
+                              
+                              //Events
 btnAdd.addEventListener('click', addTodo )
 todoList.addEventListener('click', removeTodo)
 document.addEventListener('DOMContentLoaded', showTodo )
 selected.addEventListener('change', filterTodo)
 
+// Variable pour le nombre de Todo
+let count = 0;
+
+                            //FUNCTION//
+                            
+//Fonction création élément du DOM
+function CreateElementDom(todo) {
+
+    // Ajouter une Div Container
+    const divTodo = document.createElement('div');
+    divTodo.classList.add('container-item');
+
+    //Ajouter un Li
+    const itemLi = document.createElement('li');
+    itemLi.classList.add('todo-li');
+    todoList.appendChild(divTodo);
+    divTodo.appendChild(itemLi);
+    itemLi.innerHTML = todo;
 
 
-//Function Comportement
+    // Ajouter Span Check
+    const spanComplet = document.createElement('span');
+    spanComplet.classList.add('btn-check');
+    spanComplet.innerHTML = '<i class="fa-solid fa-check"></i>';
+    divTodo.appendChild(spanComplet);
+
+    // Ajouter Span Delect
+    const spanTrash = document.createElement('span');
+    spanTrash.classList.add('btn-delect');
+    spanTrash.innerHTML = '<i class="fa-solid fa-trash"></i>';
+    divTodo.appendChild(spanTrash);
+}
+
+
 function addTodo(e) {
 
     e.preventDefault();
+    
+
+
 
 
     if (input.value !== '') {
 
+        //   Ajouter le nombre de Todo
+        countItem.innerHTML = count += 1
+
+
+        //Récupérer les todos dans le localStorage
         let todos;
 
-        let getLocal = localStorage.getItem('todos')
+        let getLocalStorage = localStorage.getItem('todos')
     
-        if (getLocal === null) {
+        if (getLocalStorage === null) {
     
             todos = [];
     
         } else {
     
-            todos = JSON.parse(getLocal)
+            todos = JSON.parse(getLocalStorage)
         }
-    
+           
+
         todos.push(input.value);
     
-        localStorage.setItem('todos', JSON.stringify(todos))
-
+        localStorage.setItem('todos', JSON.stringify(todos)) 
         
-       
-            // Ajouter une Div Container
-            const divTodo = document.createElement('div');
-            divTodo.classList.add('container-item');
+        
+        
+        CreateElementDom(input.value)
     
-            //Ajouter un Li
-            const itemLi = document.createElement('li');
-            itemLi.classList.add('todo-li');
-            todoList.appendChild(divTodo);
-            divTodo.appendChild(itemLi);
-            itemLi.innerHTML = input.value;
-        
-            // Ajouter Span Check
-            const spanComplet = document.createElement('span');
-            spanComplet.classList.add('btn-check');
-            spanComplet.innerHTML = '<i class="fa-solid fa-check"></i>';
-            divTodo.appendChild(spanComplet);
-        
-            // Ajouter Span Delect
-            const spanTrash = document.createElement('span');
-            spanTrash.classList.add('btn-delect');
-            spanTrash.innerHTML = '<i class="fa-solid fa-trash"></i>';
-            divTodo.appendChild(spanTrash);
-    
-
         //Réinitialiser l'input après saisie
         input.value = '';
+        
         
     } else {
 
@@ -73,124 +93,98 @@ function addTodo(e) {
     }
 }    
 
-function removeTodo(e){
-
-   const item = e.target;
-
-   if(item.classList[0] === 'btn-delect'){
-       
-       const todo = item.parentElement;
-       removeLocal(todo)
-
-       todo.classList.add("trash-btn")
-
-       todo.addEventListener('animationend', () => { 
-
-           todo.remove()
-       })  
-   }
-
-   if(item.classList[0] === 'btn-check') {
-
-    const todo = item.parentElement;
-
-    todo.classList.toggle('complet')
-   }
-}
-// Afficher les taches après rafraichissement de la page 
+// Afficher les taches après rafraichissement du navigateur
 function showTodo() {
-    let todos;
 
-    let viewLocal = localStorage.getItem('todos')
-
-    if (viewLocal === null) {
-
-        todos = [];
-
-    } else {
-
-        todos = JSON.parse(viewLocal)
-    }
-
+    //récupérer le localStorage
+    let todos = JSON.parse(localStorage.getItem('todos'))
 
     todos.forEach(item => {
 
-        const divTodo = document.createElement('div');
-        divTodo.classList.add('container-item');
-        const itemLi = document.createElement('li');
-        itemLi.classList.add('todo-li');
-        todoList.appendChild(divTodo);
-        divTodo.appendChild(itemLi);
-        itemLi.innerHTML = item;
-    
-        // Ajouter Span Check
-        const spanComplet = document.createElement('span');
-        spanComplet.classList.add('btn-check');
-        spanComplet.innerHTML = '<i class="fa-solid fa-check"></i>';
-        divTodo.appendChild(spanComplet);
-    
-        // Ajouter Span Delect
-        const spanTrash = document.createElement('span');
-        spanTrash.classList.add('btn-delect');
-        spanTrash.innerHTML = '<i class="fa-solid fa-trash"></i>';
-        divTodo.appendChild(spanTrash);
+        
+        CreateElementDom(item)
+
+        //Afficher le nombre de todo après rafraichissement du DOM
+        countItem.innerHTML = count += 1;
     })
  
 }
 
-//Suprimer  un Todo dans le localStorage
+function removeTodo(e){
+
+    const item = e.target;
+ 
+    if(item.classList[0] === 'btn-delect') {
+       countItem.innerHTML = count -= 1
+        
+        const todo = item.parentElement;
+ 
+        removeLocal(todo)
+        
+        
+        todo.classList.add("trash-btn")
+        
+        todo.addEventListener('animationend', () => { 
+         
+            todo.remove()    
+         })  
+  
+     }
+ 
+    if(item.classList[0] === 'btn-check') {
+ 
+     const todo = item.parentElement;
+ 
+     todo.classList.toggle('complet')
+    }
+}
+ 
+//Supprimer  les Todos dans le localStorage
 function removeLocal(todo) {
 
-    let todos;
-
-        let viewLocal = localStorage.getItem('todos')
     
-        if (viewLocal === null) {
-    
-            todos = [];
-    
-        } else {
-    
-            todos = JSON.parse(viewLocal)
-        }
-
     let todoIndex = todo.children[0].innerText 
     
-    todos.splice(todos.indexOf(todoIndex), 1)
+    let todos = JSON.parse(localStorage.getItem('todos'))
 
+    todos.splice(todos.indexOf(todoIndex), 1);
+   
     localStorage.setItem('todos', JSON.stringify(todos))
     
 }
 
-//Initialiser le select
+//Afficher les Todos en fonction du filtre
 function filterTodo(e) {
-
+   
+   // Récupérer les items
    const todo = todoList.childNodes;
 
    todo.forEach(todos => {
 
        switch(e.target.value) {
     
-           case 'all': todos.style.display = 'flex'
+           case 'all': todos.style.display = 'flex';
            break;
     
-           case 'complet': if (todos.classList.contains('complet')) {
+           case 'complet': 
+           if (todos.classList.contains('complet')) {
                
-               todos.style.display = 'flex'
+               todos.style.display = 'flex';
     
            } else {
     
-               todos.style.display = 'none'
+               todos.style.display = 'none';
            }
            break;
            
-           case 'incomplet': if (!todos.classList.contains('complet')){
+           case 'incomplet': 
+           if (!todos.classList.contains('complet')) {
             
-            todos.style.display = 'flex'
+            todos.style.display = 'flex';
 
            } else {
 
-            todos.style.display = 'none'
+            todos.style.display = 'none';
 
            }
            break;    
@@ -200,3 +194,6 @@ function filterTodo(e) {
 
 
 }
+
+
+

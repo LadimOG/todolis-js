@@ -86,6 +86,14 @@ select{
     font-size: 1.2rem;
 }
 
+.count-todo{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 850px;
+    margin-bottom: 10px;
+}
+
 .todo-Watch{
     display: flex;
     justify-content: center;
@@ -100,10 +108,7 @@ select{
      display: block;
     justify-content: center;
     align-items: center;
-    width: 500px;
-    
-    
-    
+    width: 500px;   
  
 }
 
@@ -130,6 +135,7 @@ select{
 }
 
 .container-item li{
+    padding: 10px;
     flex: 1;
 }
 .btn-check {
